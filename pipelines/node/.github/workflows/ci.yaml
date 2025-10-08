@@ -1,0 +1,28 @@
+name: CI/CD
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST_STG_SERVER }}
+          username: ${{ secrets.SSH_USERNAME_STG_SERVER }}
+          port: ${{ secrets.SSH_PORT_STG_SERVER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_STG_SERVER }}
+          script: |
+            echo "Deploying to server"
+            cd ${{ secrets.SSH_PATH_STG_SERVER }} && ./.scripts/deploy-staging.sh 
