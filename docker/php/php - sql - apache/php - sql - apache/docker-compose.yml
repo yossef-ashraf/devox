@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+
+  web:
+    image: myapp
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydb
+    volumes:
+      - db-data:/var/lib/mysql
+
+  mysql:
+    image: mariadb:10.5.8
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=mount-wolf-film"
+      - "MYSQL_DATABASE=mount-wolf-film"
+      - "MYSQL_USER=mount-wolf-film"
+      - "MYSQL_PASSWORD=mount-wolf-film"
+    ports:
+      - "3306:3306"
+    networks:
+      - service-network
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8001:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+    networks:
+      - service-network
+
+  composer:
+    image: composer:2.1.14
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: composer install
+    networks:
+      - service-network
+
+volumes:
+  db-data:
+  mysqldata:
+
+networks:
+  service-network:

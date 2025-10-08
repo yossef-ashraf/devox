@@ -1,0 +1,22 @@
+#Dockerfile
+
+# Use Node.js image as base
+FROM node:14
+
+# Set the workflow in the image
+WORKDIR /app
+
+# Copy the package.json and package-lock.json files to the current path (/app)
+COPY package*.json ./
+
+# Install dependencies using npm
+RUN npm install
+
+# Copy application files to the current path (/app)
+COPY . .
+
+# Open a port to run the application
+EXPOSE 3000
+
+# Run the application
+CMD ["npm", "start"]

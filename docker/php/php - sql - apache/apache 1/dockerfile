@@ -1,0 +1,20 @@
+# Use the official PHP Apache image
+FROM php:8.0-apache
+
+# Install additional PHP extensions if needed
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Copy your application code to the container
+COPY . /var/www/html/
+
+# Copy custom Apache VirtualHost configuration
+COPY apache-config/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Expose port 80
+EXPOSE 80
+
+# Run Apache in the foreground
+CMD ["apache2-foreground"]
